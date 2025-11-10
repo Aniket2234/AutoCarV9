@@ -4290,7 +4290,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all invoices
   app.get("/api/invoices", requireAuth, requirePermission('invoices', 'read'), async (req, res) => {
     try {
-      const { status, paymentStatus, customerId, fromDate, toDate } = req.query;
+      const { status, paymentStatus, customerId, fromDate, toDate, search } = req.query;
       const userRole = (req as any).session.userRole;
       const userId = (req as any).session.userId;
       
@@ -4317,6 +4317,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         query.createdAt = {};
         if (fromDate) query.createdAt.$gte = new Date(fromDate as string);
         if (toDate) query.createdAt.$lte = new Date(toDate as string);
+      }
+      
+      // Comprehensive search across multiple fields
+      if (search && typeof search === 'string') {
+        const sanitizedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const searchRegex = new RegExp(sanitizedSearch, 'i');
+        
+        query.$or = [
+          { invoiceNumber: searchRegex },
+          { 'customerDetails.fullName': searchRegex },
+          { 'customerDetails.mobileNumber': searchRegex },
+          { 'customerDetails.email': searchRegex },
+          { 'customerDetails.referenceCode': searchRegex },
+          { 'vehicleDetails.vehicleNumber': searchRegex },
+          { 'vehicleDetails.vehicleBrand': searchRegex },
+          { 'vehicleDetails.vehicleModel': searchRegex },
+        ];
       }
       
       const invoices = await Invoice.find(query)
