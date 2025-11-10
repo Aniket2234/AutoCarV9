@@ -243,8 +243,9 @@ export default function Invoices() {
   };
 
   const filteredInvoices = invoices.filter(invoice => {
-    const matchesSearch = invoice.invoiceNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      invoice.customerName.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = invoice.invoiceNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      invoice.customerName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      invoice.customerId?.fullName?.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesSearch;
   });
 
