@@ -1006,7 +1006,7 @@ export default function ServiceVisits() {
                 )}
               </div>
 
-              <div className="grid grid-cols-2 gap-6">
+              <div className={`grid ${selectedStatus === 'inquired' ? 'grid-cols-1' : 'grid-cols-2'} gap-6`}>
                 <div className="space-y-2">
                   <Label>Before Service Images</Label>
                   <Input 
@@ -1037,35 +1037,37 @@ export default function ServiceVisits() {
                   )}
                 </div>
 
-                <div className="space-y-2">
-                  <Label>After Service Images</Label>
-                  <Input 
-                    type="file" 
-                    accept="image/*"
-                    onChange={handleAfterImageUpload}
-                    data-testid="input-after-image"
-                  />
-                  {afterImages.length > 0 && (
-                    <div className="grid grid-cols-2 gap-2 mt-2">
-                      {afterImages.map((img, idx) => (
-                        <div key={idx} className="relative border-2 border-orange-300 dark:border-orange-700 rounded p-1 cursor-pointer hover:opacity-90 transition-opacity" onClick={() => handleImageClick(img)}>
-                          <img src={img} alt={`After ${idx + 1}`} className="w-full h-24 object-cover rounded" />
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setAfterImages(afterImages.filter((_, i) => i !== idx));
-                            }}
-                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600 z-10"
-                            data-testid={`button-remove-after-${idx}`}
-                          >
-                            ×
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                {selectedStatus !== 'inquired' && (
+                  <div className="space-y-2">
+                    <Label>After Service Images</Label>
+                    <Input 
+                      type="file" 
+                      accept="image/*"
+                      onChange={handleAfterImageUpload}
+                      data-testid="input-after-image"
+                    />
+                    {afterImages.length > 0 && (
+                      <div className="grid grid-cols-2 gap-2 mt-2">
+                        {afterImages.map((img, idx) => (
+                          <div key={idx} className="relative border-2 border-orange-300 dark:border-orange-700 rounded p-1 cursor-pointer hover:opacity-90 transition-opacity" onClick={() => handleImageClick(img)}>
+                            <img src={img} alt={`After ${idx + 1}`} className="w-full h-24 object-cover rounded" />
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setAfterImages(afterImages.filter((_, i) => i !== idx));
+                              }}
+                              className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600 z-10"
+                              data-testid={`button-remove-after-${idx}`}
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className={`flex ${canDelete ? 'justify-between' : 'justify-end'} gap-2 pt-4`}>
